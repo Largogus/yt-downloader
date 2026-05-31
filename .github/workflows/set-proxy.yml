@@ -1,0 +1,35 @@
+name: Update Proxy
+
+on:
+  workflow_dispatch:
+    inputs:
+      proxy:
+        description: "New proxy"
+        required: true
+        default: "http://127.0.0.1:8080"
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update config.json
+        run: |
+          echo "{\"proxy\": \"${{ github.event.inputs.proxy }}\" > config.json
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+          git add config.json
+
+          git diff --cached --quiet && echo "No changes" && exit 0
+
+          git commit -m "update proxy"
+          git push
