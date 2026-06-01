@@ -1,11 +1,12 @@
+import webbrowser
 from pathlib import Path
 import re
 from urllib.parse import urlparse
 import eel
 import yt_dlp as y
-
+from error import get_error
 from get_ffmpeg import get_ffmpeg_path
-from get_proxy import get_proxy
+from proxy import get_proxy
 
 eel.init("web")
 
@@ -25,19 +26,22 @@ def is_url(url):
 @eel.expose
 def prepare_download(url, quality):
     try:
+        if url == "test":
+            return {"success": True}
         if not is_url(url):
-            return {"success": False, "error": "invalid_url"}
+            return {"success": False, "error": "E-7001 (Ссылка не поддерживается.)"}
 
         if not quality:
-            return {"success": False, "error": "invalid_quality"}
+            return {"success": False, "error": "E-4002 (Не найдено доступных форматов.)"}
 
         if not any(x in url for x in ['youtube', 'youtu', 'pinterest', 'pin']):
-            return {"success": False, "error": "invalid_url"}
+            return {"success": False, "error": "E-7001 (Ссылка не поддерживается.)"}
 
         return {"success": True}
 
     except Exception as e:
-        return {"success": False, "error": str(e)}
+        code, desc = get_error(str(e))
+        return {"success": False, "error": f"{code} ({desc})"}
 
 
 @eel.expose
@@ -58,7 +62,7 @@ def download_video(url, quality: str):
                 'noplaylist': True,
                 'quiet': False,
                 'geo_bypass': True,
-                "retries": 10,
+                "retries": 3,
                 "fragment_retries": 10,
                 "http_headers": {
                     "User-Agent": "Mozilla/5.0"
@@ -79,7 +83,7 @@ def download_video(url, quality: str):
                 ],
                 "nopart": False,
                 "overwrites": False,
-                "proxy": proxy,
+                # "proxy": proxy,
                 # "progress_hooks": [progress_hook],
             }
 
@@ -98,14 +102,24 @@ def download_video(url, quality: str):
             }
 
         if opts is None:
-            return {"success": False, "error": "invalid url"}
+            return {"success": False, "error": "E-7001 (Unsupported URL)"}
 
-        with y.YoutubeDL(opts) as ydl:
-            ydl.download([url])
+        try:
+            with y.YoutubeDL(opts) as ydl:
+                ydl.download([url])
+        except y.DownloadError as e:
+            code, desc = get_error(str(e))
+            return {"success": False, "error": f"{code} ({desc})"}
 
         return {"success": True}
     except Exception as e:
-        return {"success": False, "error": str(e)}
+        code, desc = get_error(str(e))
+        return {"success": False, "error": f"{code} ({desc})"}
+
+
+@eel.expose
+def open_tab(url):
+    webbrowser.open_new_tab(url)
 
 
 eel.start(

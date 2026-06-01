@@ -7,10 +7,9 @@ body {
 .content {
     display: flex;
     flex-direction: column;
-    gap: 5%;
+    gap: 20px;
     background: #11141b;
     border-radius: 28px;
-    height: 100vh;
     justify-content: start;
     padding: 30px;
 }
@@ -82,8 +81,6 @@ body {
 }
 
 .btn {
-    --accent: #e60023;
-    background: linear-gradient(135deg, var(--accent), #ff6b7a);
     border-radius: 18px;
     height: 48px;
     padding: 0 18px;
@@ -101,12 +98,51 @@ body {
 
 .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 35px rgba(255,59,77,.32);
 }
 
 .btn:active {
     transform: translateY(0px);
+}
+
+#dwn {
+    --accent: #e60023;
+    background: linear-gradient(135deg, var(--accent), #ff6b7a);
+}
+
+#dwn:hover {
+    box-shadow: 0 0 35px rgba(255,59,77,.32);
+}
+
+#dwn:active {
     box-shadow: 0 0 20px rgba(255,59,77,.2);
+}
+
+#sett {
+    flex: 1;
+    --accent: #707070;
+    background: linear-gradient(135deg, var(--accent), #9c9c9c);
+}
+
+#sett:hover {
+    box-shadow: 0 0 35px rgba(66, 66, 66, 0.32);
+}
+
+#sett:active {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+#rept {
+    flex: 1;
+    --accent: #00ca6c;
+    background: linear-gradient(135deg, var(--accent), #02be70);
+}
+
+#rept:hover {
+    box-shadow: 0 0 35px rgba(117, 255, 37, 0.32);
+}
+
+#rept:active {
+    box-shadow: 0 0 20px rgba(0, 104, 14, 0.2);
 }
 
 .inp {
@@ -130,8 +166,23 @@ body {
     text-align: center;
 }
 
-#sidetext {
+.text {
+    color: #f2f5f7;
+    text-align: center;
+}
+
+.sidetext {
     color: #9aa4b2;
+}
+
+#side-title {
+    font-size: 12px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+#side-title:hover {
+    cursor: copy;
 }
 
 #name {
@@ -139,10 +190,6 @@ body {
     border-radius: 28px;
     font-size: 2em;
     font-weight: bold;
-}
-
-a {
-    margin: 0 auto;
 }
 
 .modal {
@@ -226,4 +273,38 @@ a {
 
 .modal-footer:hover {
     opacity: 1;
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
+    gap: 20%;
+    background: #11141b;
+    border-radius: 28px;
+    justify-content: start;
+    padding: 15px;
+}
+
+
+.toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    
+    background: #1f2937;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 10px;
+    
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    
+    transition: 0.2s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(5px);
 }

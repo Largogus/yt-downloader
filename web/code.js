@@ -1,5 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
-    window.resizeTo(1000, 455);
+    window.resizeTo(1000, 560);
 });
 
 
@@ -40,11 +40,15 @@ function hideModal() {
 }
 
 const title = document.querySelector(".modal-title");
+const sidetitle = document.getElementById("side-title");
 const loaderBar = document.querySelector(".loader-bar");
 
 
 function showError(errorText = "Что-то пошло не так") {
     title.textContent = "Произошла ошибка";
+    sidetitle.textContent = errorText;
+    sidetitle.style.display = 'block';
+    
     console.error(`Ошибка: ${errorText}`)
 
     modal.classList.add("show");
@@ -53,6 +57,7 @@ function showError(errorText = "Что-то пошло не так") {
 
     setTimeout(() => {
         modal.classList.remove("show");
+        sidetitle.style.display = 'none';
         loaderBar.style.display = "block";
     }, 10000);
 }
@@ -71,8 +76,9 @@ btn.addEventListener("click", () => {
 
     eel.prepare_download(url, quality)(function(res) {
 
+        error_url(res.success);
+
         if (!res.success) {
-            error_url();
             return;
         }
 
@@ -103,3 +109,31 @@ function error_url(state) {
 
     inp.classList.toggle("error", !state);
 }
+
+document.getElementById("side-title").addEventListener('click', function(event) {
+  navigator.clipboard.writeText(sidetitle.textContent);
+  showToast()
+});
+
+function showToast() {
+    const toast = document.getElementById("toast");
+    toast.textContent = toast.textContent;
+    toast.classList.add("show");
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+    }, 1000);
+}
+
+const rept = document.getElementById("rept")
+const p = document.querySelectorAll("p")
+
+rept.addEventListener('click', function() {
+    eel.open_tab(rept.getAttribute("link"))
+})
+
+p.forEach(i => {
+    i.onclick = () => {
+        eel.open_tab(i.getAttribute("link"))
+    };
+});
